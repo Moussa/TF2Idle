@@ -89,7 +89,7 @@ def chooseAccounts(options=True):
 
 	return accounts
 
-def idleAccount(username, password, steamlocation, sandboxname=None):
+def idleAccount(username, password, steamlocation=config['SecondarySteamapps'], sandboxname=None):
 	steamlaunchcommand = r'"%s/Steam.exe" -login %s %s -applaunch 440 +exec idle.cfg -textmode -nosound -low -novid -nopreload -nojoy -sw +sv_lan 1 -width 640 -height 480 +map itemtest' % (steamlocation, username, password)
 	command = r'"%s/Start.exe" /box:%s %s' % (config['SandboxieLocation'], sandboxname, steamlaunchcommand)
 	
@@ -197,7 +197,7 @@ def startLog(screen):
 				screen.addstr(wy, 0, '')
 			else:
 				if item['item_slot'] == u'head' or item['item_slot'] == u'misc': # Hatte Hatte Hatte
-					textformatattribute = textformatattribute | curses.A_REVERSE
+					textformatattribute = curses.color_pair(accounts.index(item['account'])+1) | curses.A_REVERSE
 					screen.addstr(wy, 2, ' ' * (wx - 4), textformatattribute) # Paint entire line
 				else:
 					textformatattribute = curses.color_pair(accounts.index(item['account'])+1)
@@ -235,19 +235,28 @@ def main():
 			accounts = chooseAccounts()
 			for account in accounts:
 				print '\nStarting %s for idling...' % account['username']
-				idleAccount(account['username'], account['password'], account['steaminstall'], account['sandboxname'])
+				if 'steaminstall' in account:
+					idleAccount(account['username'], account['password'], steamlocation=account['steaminstall'], sandboxname=account['sandboxname'])
+				else:
+					idleAccount(account['username'], account['password'], sandboxname=account['sandboxname'])
 				time.sleep(3)
 		 # Start idling this account unsandboxed
 		if choice == '2':
 			account = chooseAccounts()
 			print '\nStarting %s for idling...' % account[0]['username']
-			idleAccount(account[0]['username'], account[0]['password'], account['steaminstall'])
+			if 'steaminstall' in account[0]:
+				idleAccount(account[0]['username'], account[0]['password'], steamlocation=steamaccount['steaminstall'])
+			else:
+				idleAccount(account[0]['username'], account[0]['password'])
 		# Start up these accounts normally in sandboxes
 		if choice == '3':
 			accounts = chooseAccounts()
 			for account in accounts:
 				print '\nStarting %s up...' % account['username']
-				launchAccount(account['username'], account['password'], account['steaminstall'], account['sandboxname'])
+				if 'steaminstall' in account:
+					launchAccount(account['username'], account['password'], steamlocation=account['steaminstall'], sandboxname=account['sandboxname'])
+				else:
+					launchAccount(account['username'], account['password'], sandboxname=account['sandboxname'])
 				time.sleep(3)
 		# Open new window to log item drops
 		if choice == '4':
