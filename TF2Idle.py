@@ -2,19 +2,19 @@ import shutil, os, subprocess, time, datetime, webbrowser, sys
 import curses, tf2
 from TF2IdleConfig import config
 
-backpackViewerDict = {'optf2': 'http://optf2.com/tf2/user/%ID%',
-					  'steam': 'http://steamcommunity.com/id/%ID%/inventory',
-					  'tf2b': 'http://tf2b.com/?id=%ID%',
-					  'tf2items': 'http://www.tf2items.com/id/%ID%'
-					 }
-
+backpackViewerDict = {'optf2': 'http://optf2.com/tf2/user/%(ID)s',
+					  'steam': 'http://steamcommunity.com/id/%(ID)s/inventory',
+					  'tf2b': 'http://tf2b.com/?id=%(ID)s',
+					  'tf2items': 'http://www.tf2items.com/id/%(ID)s'
+					  }
+					  
 def copyfiles():
 	gcfs = ['team fortress 2 content.gcf','team fortress 2 materials.gcf','team fortress 2 client content.gcf']
 	print '\nPlease wait, copying GCFs over...'
 	try:
 		for file in gcfs:
 			print '\nCopying ' + file + '...'
-			shutil.copy(config['SteamLocation'] + os.sep + 'steamapps' + os.sep + file, config['SecondarySteamLocation'] + os.sep + 'steamapps')
+			shutil.copy(config['SteamLocation'] + os.sep + 'steamapps' + os.sep + file, config['SecondarySteamapps'])
 		print '\nDone'
 		print '\nDon\'t forget to run Steam unsandboxed to finish the update'
 	except:
@@ -41,14 +41,19 @@ def getChoice(options=True):
 
 def chooseAccounts(options=True):
 	noOfAccounts = len(config['IdleAccounts'])
+	DEFAULT_HIGHEST_CHOICE = 2
 	if options:
 		print '\nPlease select which accounts in comma separated values (e.g. 1,2,3):\n'
 		n = 0
+		
 		print '[0] All accounts'
+		print '[1] All premium accounts'
+		print '[2] All free-to-play accounts'
 		for account in config['IdleAccounts']:
-			print '[' + str(n+1) + ']', config['IdleAccounts'][n]['username']
+			print '[' + str(n+DEFAULT_HIGHEST_CHOICE+1) + ']', config['IdleAccounts'][n]['username']
 			n += 1
 		print ''
+	
 	choices = str(raw_input('')).replace(' ','').split(',')
 	
 	accounts = []
@@ -58,21 +63,34 @@ def chooseAccounts(options=True):
 		for account in config['IdleAccounts']:
 			accounts.append(config['IdleAccounts'][n])
 			n += 1
+			
+	elif len(choices) == 1 and choices[0] == '1':
+		n = 0
+		for account in config['IdleAccounts']:
+			if account["premium"] == True:
+				accounts.append(config['IdleAccounts'][n])
+			n += 1
+	elif len(choices) == 1 and choices[0] == '2':
+		n = 0
+		for account in config['IdleAccounts']:
+			if account["premium"] == False:
+				accounts.append(config['IdleAccounts'][n])
+			n += 1
 	else:
 		try:
 			for choice in choices:
-				if int(choice) > noOfAccounts or int(choice) < 1:
+				if int(choice) > (noOfAccounts+DEFAULT_HIGHEST_CHOICE) or int(choice) < 1:
 					raise Exception
-				else:
-					accounts.append(config['IdleAccounts'][int(choice)-1])
+				for x in choices:
+					accounts.append(config['IdleAccounts'][int(x)-DEFAULT_HIGHEST_CHOICE-1])
 		except:
 			print 'Invalid input, try again:\n'
 			accounts = chooseAccounts(options=False)
 
 	return accounts
 
-def idleAccount(username, password, sandboxname=None):
-	steamlaunchcommand = r'"%s/Steam.exe" -login %s %s -applaunch 440 +exec idle.cfg -textmode -nosound -low -novid -nopreload -nojoy -sw +sv_lan 1 -width 640 -height 480 +map itemtest' % (config['SecondarySteamLocation'], username, password)
+def idleAccount(username, password, steamlocation, sandboxname=None):
+	steamlaunchcommand = r'"%s/Steam.exe" -login %s %s -applaunch 440 +exec idle.cfg -textmode -nosound -low -novid -nopreload -nojoy -sw +sv_lan 1 -width 640 -height 480 +map itemtest' % (steamlocation, username, password)
 	command = r'"%s/Start.exe" /box:%s %s' % (config['SandboxieLocation'], sandboxname, steamlaunchcommand)
 	
 	if sandboxname is not None:
@@ -80,8 +98,8 @@ def idleAccount(username, password, sandboxname=None):
 	else:
 		returnCode = subprocess.call(steamlaunchcommand)
 
-def launchAccount(username, password, sandboxname):
-	steamlaunchcommand = r'"%s/Steam.exe" -login %s %s -applaunch 440' % (config['SecondarySteamLocation'], username, password)
+def launchAccount(username, password, steamlocation, sandboxname):
+	steamlaunchcommand = r'"%s/Steam.exe" -login %s %s -applaunch 440' % (steamlocation, username, password)
 	command = r'"%s/Start.exe" /box:%s %s' % (config['SandboxieLocation'], sandboxname, steamlaunchcommand)
 
 	returnCode = subprocess.call(command)
@@ -92,7 +110,7 @@ def deleteSandboxContents(sandboxname):
 	returnCode = subprocess.call(command)
 	
 def openBackpack(vanityID):
-	address = backpackViewerDict[config['BackpackViewer'].lower()].replace('%ID%', vanityID)
+	address = backpackViewerDict[config['BackpackViewer'].lower()] % {'ID': vanityID}
 	webbrowser.open(address)
 
 def startLog(screen):
@@ -106,7 +124,7 @@ def startLog(screen):
 	curses.init_pair(5, 13, curses.COLOR_BLACK) #PINK
 	curses.init_pair(6, 9, curses.COLOR_BLACK) #BLUE
 	curses.init_pair(7, 15, curses.COLOR_BLACK) #WHITE
-	
+
 	accounts = eval(sys.argv[2:][0])
 	API = tf2.API(key=config['Steam API Key'])
 
@@ -121,7 +139,7 @@ def startLog(screen):
 	screen.border(0)
 	screen.addstr(int(round(float(wy)/2.0)), int(round(centreValue(wx, 'Please wait, loading accounts...'))), 'Please wait, loading accounts...', curses.color_pair(7))
 	screen.refresh()
-	
+
 	# Set up initial backpack inventory
 	for account in accounts:
 		if account['steamID'] != '':
@@ -173,7 +191,7 @@ def startLog(screen):
 		curses.cbreak()
 		curses.noecho()
 		screen.keypad(1)
-		
+
 		def printscreenline(wy, wx, item):
 			if item == '':
 				screen.addstr(wy, 0, '')
@@ -186,14 +204,14 @@ def startLog(screen):
 				screen.addstr(wy, int(round(centreValue(3.0/8.0 * float(wx), item['item']))), item['item'], textformatattribute)
 				screen.addstr(wy, int(round(3.0/8.0 * float(wx) + centreValue(3.0/8.0 * float(wx), item['account']['username']))), item['account']['username'], textformatattribute)
 				screen.addstr(wy, int(round(6.0/8.0 * float(wx) + centreValue(2.0/8.0 * float(wx), item['time']))), item['time'], textformatattribute)
-			
+
 		screen.clear()
 		screen.border(0)
-		
+
 		screen.addstr(0, int(round(centreValue(3.0/8.0 * float(wx), 'Item'))), 'Item', curses.color_pair(7))
 		screen.addstr(0, int(round(3.0/8.0 * float(wx) + centreValue(3.0/8.0 * float(wx), 'Account'))), 'Account', curses.color_pair(7))
 		screen.addstr(0, int(round(6.0/8.0 * float(wx) + centreValue(2.0/8.0 * float(wx), 'Time'))), 'Time', curses.color_pair(7))
-		
+
 		# Print lines in drop log
 		for n in range(1, 21):
 			printscreenline(n, wx, finds[20-n])
@@ -204,7 +222,7 @@ def startLog(screen):
 			screen.addstr(22, legendstringlength, account['username'], curses.color_pair(accounts.index(account)+1))
 			legendstringlength += len(account['username']) + 1
 		screen.addstr(23, 2, '# of items: %s (%s crates)' % (str(findcount), str(cratefindcount)), curses.color_pair(7))
-		
+
 		screen.refresh()
 
 		time.sleep(60)
@@ -217,19 +235,19 @@ def main():
 			accounts = chooseAccounts()
 			for account in accounts:
 				print '\nStarting %s for idling...' % account['username']
-				idleAccount(account['username'], account['password'], account['sandboxname'])
+				idleAccount(account['username'], account['password'], account['steaminstall'], account['sandboxname'])
 				time.sleep(3)
 		 # Start idling this account unsandboxed
 		if choice == '2':
 			account = chooseAccounts()
 			print '\nStarting %s for idling...' % account[0]['username']
-			idleAccount(account[0]['username'], account[0]['password'])
+			idleAccount(account[0]['username'], account[0]['password'], account['steaminstall'])
 		# Start up these accounts normally in sandboxes
 		if choice == '3':
 			accounts = chooseAccounts()
 			for account in accounts:
 				print '\nStarting %s up...' % account['username']
-				launchAccount(account['username'], account['password'], account['sandboxname'])
+				launchAccount(account['username'], account['password'], account['steaminstall'], account['sandboxname'])
 				time.sleep(3)
 		# Open new window to log item drops
 		if choice == '4':
