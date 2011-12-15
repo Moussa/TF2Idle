@@ -89,7 +89,7 @@ def chooseAccounts(options=True):
 
 	return accounts
 
-def idleAccount(username, password, steamlocation=config['SecondarySteamapps'], sandboxname=None):
+def idleAccount(username, password, steamlocation=config['SecondarySteamLocation'], sandboxname=None):
 	steamlaunchcommand = r'"%s/Steam.exe" -login %s %s -applaunch 440 +exec idle.cfg -textmode -nosound -low -novid -nopreload -nojoy -sw +sv_lan 1 -width 640 -height 480 +map itemtest' % (steamlocation, username, password)
 	command = r'"%s/Start.exe" /box:%s %s' % (config['SandboxieLocation'], sandboxname, steamlaunchcommand)
 	
@@ -98,7 +98,7 @@ def idleAccount(username, password, steamlocation=config['SecondarySteamapps'], 
 	else:
 		returnCode = subprocess.call(steamlaunchcommand)
 
-def launchAccount(username, password, steamlocation, sandboxname):
+def launchAccount(username, password, steamlocation=config['SecondarySteamLocation'], sandboxname):
 	steamlaunchcommand = r'"%s/Steam.exe" -login %s %s -applaunch 440' % (steamlocation, username, password)
 	command = r'"%s/Start.exe" /box:%s %s' % (config['SandboxieLocation'], sandboxname, steamlaunchcommand)
 
