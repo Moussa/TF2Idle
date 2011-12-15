@@ -41,16 +41,15 @@ def getChoice(options=True):
 
 def chooseAccounts(options=True):
 	noOfAccounts = len(config['IdleAccounts'])
-	DEFAULT_HIGHEST_CHOICE = 2
 	if options:
 		print '\nPlease select which accounts in comma separated values (e.g. 1,2,3):\n'
 		n = 0
 		
-		print '[0] All accounts'
-		print '[1] All premium accounts'
-		print '[2] All free-to-play accounts'
+		print '[A] All accounts'
+		print '[P] All premium accounts'
+		print '[F] All free-to-play accounts'
 		for account in config['IdleAccounts']:
-			print '[' + str(n+DEFAULT_HIGHEST_CHOICE+1) + ']', config['IdleAccounts'][n]['username']
+			print '[' + str(n+1) + ']', config['IdleAccounts'][n]['username']
 			n += 1
 		print ''
 	
@@ -58,13 +57,13 @@ def chooseAccounts(options=True):
 	
 	accounts = []
 	
-	if len(choices) == 1 and choices[0] == '0':
+	if len(choices) == 1 and choices[0].lower() == 'a':
 		n = 0
 		for account in config['IdleAccounts']:
 			accounts.append(config['IdleAccounts'][n])
 			n += 1
 			
-	elif len(choices) == 1 and choices[0] == '1':
+	elif len(choices) == 1 and choices[0].lower() == 'p':
 		n = 0
 		for account in config['IdleAccounts']:
 			if 'f2p' in account:
@@ -73,7 +72,7 @@ def chooseAccounts(options=True):
 			else:
 				accounts.append(config['IdleAccounts'][n])
 			n += 1
-	elif len(choices) == 1 and choices[0] == '2':
+	elif len(choices) == 1 and choices[0].lower() == 'f':
 		n = 0
 		for account in config['IdleAccounts']:
 			if 'f2p' in account:
@@ -83,10 +82,10 @@ def chooseAccounts(options=True):
 	else:
 		try:
 			for choice in choices:
-				if int(choice) > (noOfAccounts+DEFAULT_HIGHEST_CHOICE) or int(choice) < 1:
+				if int(choice) > noOfAccounts or int(choice) < 1:
 					raise Exception
-				for x in choices:
-					accounts.append(config['IdleAccounts'][int(x)-DEFAULT_HIGHEST_CHOICE-1])
+				else:
+					accounts.append(config['IdleAccounts'][int(choice)-1])
 		except:
 			print 'Invalid input, try again:\n'
 			accounts = chooseAccounts(options=False)
