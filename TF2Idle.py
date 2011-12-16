@@ -178,12 +178,12 @@ def startLog(screen):
 
 				# Check to see if item with highest ID has changed
 				if newestitem['id'] != lastIDlist[n]:
+					lastIDlist[n] = newestitem['id']
 					if newestitem['item_class'] != 'supply_crate':
 						currenttimestr = time.strftime('%H:%M', time.localtime(time.time()))
 						output = {'item': newestitem['item_name'].encode('utf8'), 'item_slot': newestitem['item_slot'], 'account': account, 'time': currenttimestr}
 						finds.pop(0)
 						finds.append(output)
-						lastIDlist[n] = newestitem['id']
 						findcount += 1
 					else:
 						cratefindcount += 1
