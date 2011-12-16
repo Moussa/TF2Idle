@@ -35,7 +35,7 @@ def getChoice(options=True):
 	
 	if choice not in ['1', '2', '3', '4', '5', '6', '7']:
 		print 'That\'s not a valid choice, try again:\n'
-		getChoice(options=False)
+		choice = getChoice(options=False)
 	else:
 		return choice
 
