@@ -35,9 +35,8 @@ def getChoice(options=True):
 	
 	if choice not in ['1', '2', '3', '4', '5', '6', '7']:
 		print 'That\'s not a valid choice, try again:\n'
-		getChoice(options=False)
-	else:
-		return choice
+		choice = getChoice(options=False)
+	return choice
 
 def chooseAccounts(options=True):
 	noOfAccounts = len(config['IdleAccounts'])
@@ -91,7 +90,7 @@ def chooseAccounts(options=True):
 			accounts = chooseAccounts(options=False)
 
 	return accounts
-
+	
 def idleAccount(username, password, steamlocation, sandboxname=None):
 	steamlaunchcommand = r'"%s/Steam.exe" -login %s %s -applaunch 440 +exec idle.cfg -textmode -nosound -low -novid -nopreload -nojoy -sw +sv_lan 1 -width 640 -height 480 +map itemtest' % (steamlocation, username, password)
 	command = r'"%s/Start.exe" /box:%s %s' % (config['SandboxieLocation'], sandboxname, steamlaunchcommand)
@@ -178,12 +177,12 @@ def startLog(screen):
 
 				# Check to see if item with highest ID has changed
 				if newestitem['id'] != lastIDlist[n]:
-					if newestitem['item_name'] != 'Mann Co. Supply Crate':
+					lastIDlist[n] = newestitem['id']
+					if newestitem['item_name'] not in ['Mann Co. Supply Crate', 'Festive Winter Crate', 'Refreshing Summer Cooler', 'Naughty Winter Crate', 'Nice Winter Crate']:
 						currenttimestr = time.strftime('%H:%M', time.localtime(time.time()))
 						output = {'item': newestitem['item_name'].encode('utf8'), 'item_slot': newestitem['item_slot'], 'account': account, 'time': currenttimestr}
 						finds.pop(0)
 						finds.append(output)
-						lastIDlist[n] = newestitem['id']
 						findcount += 1
 					else:
 						cratefindcount += 1
@@ -224,7 +223,7 @@ def startLog(screen):
 		for account in accounts:
 			screen.addstr(22, legendstringlength, account['username'], curses.color_pair(accounts.index(account)+1))
 			legendstringlength += len(account['username']) + 1
-		screen.addstr(23, 2, '# of items: %s (%s crates)' % (str(findcount), str(cratefindcount)), curses.color_pair(7))
+		screen.addstr(23, 2, '# of items: %s (+ %s crates)' % (str(findcount), str(cratefindcount)), curses.color_pair(7))
 
 		screen.refresh()
 
