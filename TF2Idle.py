@@ -25,15 +25,16 @@ def getChoice(options=True):
 		print '\nPlease select an option:'
 		print '\n[1] Start idling'
 		print '\n[2] Start idling unsandboxed'
-		print '\n[3] Start accounts normally'
-		print '\n[4] Log item drops'
-		print '\n[5] View backpacks'
-		print '\n[6] Update TF2 GCFs'
-		print '\n[7] Delete sandbox contents\n'
+		print '\n[3] Start TF2(s) normally'
+		print '\n[4] Start Steam(s) normally'
+		print '\n[5] Log item drops'
+		print '\n[6] View backpacks'
+		print '\n[7] Update TF2 GCFs'
+		print '\n[8] Delete sandbox contents\n'
 		
 	choice = str(raw_input(''))
 	
-	if choice not in ['1', '2', '3', '4', '5', '6', '7']:
+	if choice not in ['1', '2', '3', '4', '5', '6', '7', '8']:
 		print 'That\'s not a valid choice, try again:\n'
 		choice = getChoice(options=False)
 	return choice
@@ -91,7 +92,7 @@ def chooseAccounts(options=True):
 
 	return accounts
 	
-def idleAccount(username, password, steamlocation, sandboxname=None):
+def idleTF2(username, password, steamlocation, sandboxname=None):
 	steamlaunchcommand = r'"%s/Steam.exe" -login %s %s -applaunch 440 +exec idle.cfg -textmode -nosound -low -novid -nopreload -nojoy -sw +sv_lan 1 -width 640 -height 480 +map itemtest' % (steamlocation, username, password)
 	command = r'"%s/Start.exe" /box:%s %s' % (config['SandboxieLocation'], sandboxname, steamlaunchcommand)
 	
@@ -100,12 +101,18 @@ def idleAccount(username, password, steamlocation, sandboxname=None):
 	else:
 		returnCode = subprocess.call(steamlaunchcommand)
 
-def launchAccount(username, password, steamlocation, sandboxname):
+def launchTF2(username, password, steamlocation, sandboxname):
 	steamlaunchcommand = r'"%s/Steam.exe" -login %s %s -applaunch 440' % (steamlocation, username, password)
 	command = r'"%s/Start.exe" /box:%s %s' % (config['SandboxieLocation'], sandboxname, steamlaunchcommand)
 
 	returnCode = subprocess.call(command)
 
+def launchSteam(username, password, steamlocation, sandboxname):
+	steamlaunchcommand = r'"%s/Steam.exe" -login %s %s' % (steamlocation, username, password)
+	command = r'"%s/Start.exe" /box:%s %s' % (config['SandboxieLocation'], sandboxname, steamlaunchcommand)
+
+	returnCode = subprocess.call(command)
+	
 def deleteSandboxContents(sandboxname):
 	command = r'"%s/Start.exe" /box:%s delete_sandbox' % (config['SandboxieLocation'], sandboxname)
 	
@@ -232,34 +239,43 @@ def startLog(screen):
 def main():
 	while True:
 		choice = getChoice()
-		# Start idling these accounts in sandboxes
+		# Start idling these TF2 instances in sandboxes
 		if choice == '1':
 			accounts = chooseAccounts()
 			for account in accounts:
 				print '\nStarting %s for idling...' % account['username']
-				idleAccount(account['username'], account['password'], account['steaminstall'], account['sandboxname'])
+				idleTF2(account['username'], account['password'], account['steaminstall'], account['sandboxname'])
 				time.sleep(3)
-		 # Start idling this account unsandboxed
+		 # Start idling these TF2 instances unsandboxed
 		if choice == '2':
 			account = chooseAccounts()
 			print '\nStarting %s for idling...' % account[0]['username']
-			idleAccount(account[0]['username'], account[0]['password'], account['steaminstall'])
-		# Start up these accounts normally in sandboxes
+			idleTF2(account[0]['username'], account[0]['password'], account['steaminstall'])
+		# Start up these TF2 instances normally in sandboxes
 		if choice == '3':
 			accounts = chooseAccounts()
 			for account in accounts:
 				print '\nStarting %s up...' % account['username']
-				launchAccount(account['username'], account['password'], account['steaminstall'], account['sandboxname'])
+				launchTF2(account['username'], account['password'], account['steaminstall'], account['sandboxname'])
 				time.sleep(3)
-		# Open new window to log item drops
+				
+		# Start up these Steam instances normally in sandboxes
 		if choice == '4':
+			accounts = chooseAccounts()
+			for account in accounts:
+				print '\nStarting %s up...' % account['username']
+				launchSteam(account['username'], account['password'], account['steaminstall'], account['sandboxname'])
+				time.sleep(3)
+				
+		# Open new window to log item drops
+		if choice == '5':
 			if len(config['Steam API Key']) == 32:
 				accounts = chooseAccounts()
 				os.system(r'start python -i %s droplog "%s"' % (sys.argv[0], str(accounts)))
 			else:
 				print '\nError: Please check your Steam API key is present and valid.'
 		# Open up these accounts in a backpack viewer
-		if choice == '5':
+		if choice == '6':
 			accounts = chooseAccounts()
 			for account in accounts:
 				if account['steamID'] != '':
@@ -267,10 +283,10 @@ def main():
 				else:
 					openBackpack(account['username'])
 		# Copy over upto date GCFs
-		if choice == '6':
+		if choice == '7':
 			copyfiles()
 		# Delete sandbox contents
-		elif choice == '7':
+		elif choice == '8':
 			accounts = chooseAccounts()
 			for account in accounts:
 				try:
