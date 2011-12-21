@@ -86,9 +86,9 @@ def chooseAccounts(options=True):
 		n = 0
 		
 		print '[A] All accounts'
-		print '[P] All premium accounts'
-		print '[F] All free-to-play accounts'
 		print '[G] Group'
+		print '' # A blank line between pre-set options and dynamic options
+		
 		for account in config['IdleAccounts']:
 			print '[' + str(n+1) + ']', config['IdleAccounts'][n]['username']
 			n += 1
@@ -102,23 +102,6 @@ def chooseAccounts(options=True):
 		n = 0
 		for account in config['IdleAccounts']:
 			accounts.append(config['IdleAccounts'][n])
-			n += 1
-			
-	elif len(choices) == 1 and choices[0].lower() == 'p':
-		n = 0
-		for account in config['IdleAccounts']:
-			if 'f2p' in account:
-				if account['f2p'] != True:
-					accounts.append(config['IdleAccounts'][n])
-			else:
-				accounts.append(config['IdleAccounts'][n])
-			n += 1
-	elif len(choices) == 1 and choices[0].lower() == 'f':
-		n = 0
-		for account in config['IdleAccounts']:
-			if 'f2p' in account:
-				if account['f2p'] == True:
-					accounts.append(config['IdleAccounts'][n])
 			n += 1
 	elif len(choices) == 1 and choices[0].lower() == 'g':
 		accounts.extend(chooseAccountGroups())
