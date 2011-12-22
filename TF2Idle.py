@@ -262,8 +262,9 @@ def startLog(screen):
 		screen.addstr(22, 2, 'Accounts:', curses.color_pair(7))
 		legendstringlength = len('Accounts:') + 3
 		for account in accounts:
-			screen.addstr(22, legendstringlength, (account['username'] if 'displayname' not in account else account['displayname']), curses.color_pair(accounts.index(account)+1))
-			legendstringlength += len((account['username'] if 'displayname' not in account else account['displayname'])) + 1
+			displayName = account['username'] if 'displayname' not in account else account['displayname']
+			screen.addstr(22, legendstringlength, displayName, curses.color_pair(accounts.index(account)+1))
+			legendstringlength += len(displayName) + 1
 		screen.addstr(23, 2, '# of items: %s (+ %s crates)' % (str(findcount), str(cratefindcount)), curses.color_pair(7))
 
 		screen.refresh()
@@ -278,7 +279,7 @@ def main():
 			accounts = chooseAccounts()
 			for account in accounts:
 				print '\nStarting %s for idling...' % (account['username'] if 'displayname' not in account else account['displayname'])
-				idleTF2((account['username'] if 'displayname' not in account else account['displayname']), account['password'], account['steaminstall'], account['sandboxname'])
+				idleTF2(account['username'], account['password'], account['steaminstall'], account['sandboxname'])
 				time.sleep(3)
 		 # Start idling these TF2 instances unsandboxed
 		if choice == '2':
@@ -290,7 +291,7 @@ def main():
 			accounts = chooseAccounts()
 			for account in accounts:
 				print '\nStarting %s up...' % (account['username'] if 'displayname' not in account else account['displayname'])
-				launchTF2((account['username'] if 'displayname' not in account else account['displayname']), account['password'], account['steaminstall'], account['sandboxname'])
+				launchTF2(account['username'], account['password'], account['steaminstall'], account['sandboxname'])
 				time.sleep(3)
 				
 		# Start up these Steam instances normally in sandboxes
@@ -298,7 +299,7 @@ def main():
 			accounts = chooseAccounts()
 			for account in accounts:
 				print '\nStarting %s up...' % (account['username'] if 'displayname' not in account else account['displayname'])
-				launchSteam((account['username'] if 'displayname' not in account else account['displayname']), account['password'], account['steaminstall'], account['sandboxname'])
+				launchSteam(account['username'], account['password'], account['steaminstall'], account['sandboxname'])
 				time.sleep(3)
 				
 		# Open new window to log item drops
@@ -315,7 +316,7 @@ def main():
 				if account['steamID'] != '':
 					openBackpack(account['steamID'])
 				else:
-					openBackpack((account['username'] if 'displayname' not in account else account['displayname']))
+					openBackpack(account['username'])
 		# Copy over upto date GCFs
 		if choice == '7':
 			copyfiles()
