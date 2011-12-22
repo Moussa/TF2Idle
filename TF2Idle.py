@@ -188,7 +188,7 @@ def startLog(screen):
 		if account['steamID'] != '':
 			id = tf2._getSteamID64(account['steamID'])
 		else:
-			id = tf2._getSteamID64((account['username'] if 'displayname' not in account else account['displayname']))
+			id = tf2._getSteamID64(account['username'])
 		API.getProfile(id)
 		API.getBackpack(id)
 		backpack = API.users[id]['backpack']
@@ -206,7 +206,7 @@ def startLog(screen):
 				if account['steamID'] != '':
 					id = tf2._getSteamID64(account['steamID'])
 				else:
-					id = tf2._getSteamID64((account['username'] if 'displayname' not in account else account['displayname']))
+					id = tf2._getSteamID64(account['username'])
 				API.getProfile(id)
 				API.getBackpack(id)
 				backpack = API.users[id]['backpack']
