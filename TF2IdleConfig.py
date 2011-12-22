@@ -10,14 +10,15 @@ config = {
 		 'password': r'MyPassword',
 		 'steamID': r'MySteamID',
 		 'sandboxname': r'MySandboxName', # Sandbox name in Sandboxie
-		 'steaminstall': r'G:/Sandboxie/Steam/1' # Directory that contains Steam.exe
+		 'steaminstall': r'G:/Sandboxie/Steam/1', # Directory that contains Steam.exe
+		 'group': ['Premium']
 		},
 		{'username': r'MySecondAccount',
 		 'password': r'MyPassword',
 		 'steamID': r'MySteamID',
 		 'sandboxname': r'MySandboxName',
 		 'steaminstall': r'G:/Sandboxie/Steam/2',
-		 'f2p': True
+		 'group': ['F2P','Premium'] # DEAR GOD HOW IS THIS POSSIBUL!
 		},
 		{'username': r'MyThirdAccount',
 		 'password': r'MyPassword',

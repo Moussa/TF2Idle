@@ -38,16 +38,56 @@ def getChoice(options=True):
 		print 'That\'s not a valid choice, try again:\n'
 		choice = getChoice(options=False)
 	return choice
-
+	
+def getAccountGroups(accounts):
+	groups = {}
+	for account in accounts:
+		if 'group' in account:
+			for group in account['group']:
+				if group not in groups:
+					groups[group] = [account]
+				else:
+					groups[group].append(account)
+	return groups
+	
+def chooseAccountGroups(options=True):
+	groups = getAccountGroups(config['IdleAccounts'])
+	noOfGroups = len(groups)
+	
+	if options:
+		print '\nPlease select which group(s) in comma separated values (e.g. 1,2,3):\n'
+		n = 0
+		for group in groups:
+			print '[' + str(n+1) + ']', group
+			n += 1
+		print ''
+	
+	choices = str(raw_input('')).replace(' ','').split(',')
+	
+	accounts = []
+	
+	try:
+		for choice in choices:
+			if int(choice) > noOfGroups or int(choice) < 1:
+				raise Exception
+			else:
+				accounts.extend(groups.items()[int(choice)-1][1])
+	except:
+		print 'Invalid input, try again:\n'
+		accounts = chooseAccountGroups(options=False)
+	
+	return accounts
+	
 def chooseAccounts(options=True):
 	noOfAccounts = len(config['IdleAccounts'])
 	if options:
-		print '\nPlease select which accounts in comma separated values (e.g. 1,2,3):\n'
+		print '\nPlease select which account(s) in comma separated values (e.g. 1,2,3):\n'
 		n = 0
 		
 		print '[A] All accounts'
-		print '[P] All premium accounts'
-		print '[F] All free-to-play accounts'
+		print '[G] Group'
+		print '' # A blank line between pre-set options and dynamic options
+		
 		for account in config['IdleAccounts']:
 			print '[' + str(n+1) + ']', config['IdleAccounts'][n]['username']
 			n += 1
@@ -62,23 +102,8 @@ def chooseAccounts(options=True):
 		for account in config['IdleAccounts']:
 			accounts.append(config['IdleAccounts'][n])
 			n += 1
-			
-	elif len(choices) == 1 and choices[0].lower() == 'p':
-		n = 0
-		for account in config['IdleAccounts']:
-			if 'f2p' in account:
-				if account['f2p'] != True:
-					accounts.append(config['IdleAccounts'][n])
-			else:
-				accounts.append(config['IdleAccounts'][n])
-			n += 1
-	elif len(choices) == 1 and choices[0].lower() == 'f':
-		n = 0
-		for account in config['IdleAccounts']:
-			if 'f2p' in account:
-				if account['f2p'] == True:
-					accounts.append(config['IdleAccounts'][n])
-			n += 1
+	elif len(choices) == 1 and choices[0].lower() == 'g':
+		accounts.extend(chooseAccountGroups())
 	else:
 		try:
 			for choice in choices:
