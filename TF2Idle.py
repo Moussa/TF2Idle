@@ -68,7 +68,6 @@ def chooseAccountGroups(options=True):
 	
 	try:
 		for choice in choices:
-			print noOfGroups
 			if int(choice) > noOfGroups or int(choice) < 1:
 				raise Exception
 			else:
