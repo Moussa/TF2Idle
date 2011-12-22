@@ -44,6 +44,7 @@ def getAccountGroups(accounts):
 	for account in accounts:
 		if 'group' in account:
 			for group in account['group']:
+				group = group.lower()
 				if group not in groups:
 					groups[group] = [account]
 				else:
@@ -54,11 +55,19 @@ def chooseAccountGroups(options=True):
 	groups = getAccountGroups(config['IdleAccounts'])
 	noOfGroups = len(groups)
 	
+	if noOfGroups == 0:
+		print '\nYou have no groups set up. Please create some first.'
+		return chooseAccounts(options=True) 
+	
 	if options:
 		print '\nPlease select which group(s) in comma separated values (e.g. 1,2,3):\n'
 		n = 0
 		for group in groups:
-			print '[' + str(n+1) + ']', group
+			groupmembers = ''
+			for user in groups[group]:
+				groupmembers += user['username'] + ', '
+			groupmembers = groupmembers[:-2] # Get rid of trailing comma
+			print '[%s] %s (%s)' % (str(n+1), group, groupmembers)
 			n += 1
 		print ''
 	
