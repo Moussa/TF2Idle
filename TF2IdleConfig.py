@@ -6,19 +6,20 @@ config = {
 	'Steam API Key': r'', # Steam API key (If you wish to use the item logging function)
 	'BackpackViewer': r'', # Backpack viewer site. Options = OPTF2, Steam, TF2B, TF2Items
 	'IdleAccounts': [
-		{'username': r'MyAccount',
+		{'displayname': r'Account #1',
+		'username': r'MyAccount',
 		 'password': r'MyPassword',
 		 'steamID': r'MySteamID',
 		 'sandboxname': r'MySandboxName', # Sandbox name in Sandboxie
 		 'steaminstall': r'G:/Sandboxie/Steam/1', # Directory that contains Steam.exe
-		 'group': ['Premium']
+		 'group': [r'Premium']
 		},
 		{'username': r'MySecondAccount',
 		 'password': r'MyPassword',
 		 'steamID': r'MySteamID',
 		 'sandboxname': r'MySandboxName',
 		 'steaminstall': r'G:/Sandboxie/Steam/2',
-		 'group': ['F2P','Premium'] # DEAR GOD HOW IS THIS POSSIBUL!
+		 'group': [r'F2P',r'Premium'] # DEAR GOD HOW IS THIS POSSIBUL!
 		},
 		{'username': r'MyThirdAccount',
 		 'password': r'MyPassword',
