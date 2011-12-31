@@ -285,7 +285,7 @@ def main():
 		if choice == '2':
 			account = chooseAccounts()
 			print '\nStarting %s for idling...' % account[0]['username']
-			idleTF2(account[0]['username'], account[0]['password'], account['steaminstall'])
+			idleTF2(account[0]['username'], account[0]['password'], account[0]['steaminstall'])
 		# Start up these TF2 instances normally in sandboxes
 		if choice == '3':
 			accounts = chooseAccounts()
