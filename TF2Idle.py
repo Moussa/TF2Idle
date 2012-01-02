@@ -102,7 +102,7 @@ def chooseAccounts(options=True):
 			n += 1
 		print ''
 	
-	choices = str(raw_input('')).replace(' ','').split(',')
+	choices = str(raw_input('')).replace(' ','').replace('.',',').split(',')
 	
 	accounts = []
 	
@@ -278,13 +278,16 @@ def main():
 		if choice == '1':
 			accounts = chooseAccounts()
 			for account in accounts:
-				print '\nStarting %s for idling...' % (account['username'] if 'displayname' not in account else account['displayname'])
+				print '\nStarting idle session on %s...' % (account['username'] if 'displayname' not in account else account['displayname'])
 				idleTF2(account['username'], account['password'], account['steaminstall'], account['sandboxname'])
-				time.sleep(3)
-		 # Start idling these TF2 instances unsandboxed
+				time.sleep(2)
+		 # Start idling single TF2 instance unsandboxed
 		if choice == '2':
 			account = chooseAccounts()
-			print '\nStarting %s for idling...' % account[0]['username']
+			if len(account) > 1:
+				print '\nInvalid choice, please choose a single account'
+				continue
+			print '\nStarting idle session on %s...' % account[0]['username']
 			idleTF2(account[0]['username'], account[0]['password'], account[0]['steaminstall'])
 		# Start up these TF2 instances normally in sandboxes
 		if choice == '3':
@@ -292,15 +295,14 @@ def main():
 			for account in accounts:
 				print '\nStarting %s up...' % (account['username'] if 'displayname' not in account else account['displayname'])
 				launchTF2(account['username'], account['password'], account['steaminstall'], account['sandboxname'])
-				time.sleep(3)
-				
+				time.sleep(2)	
 		# Start up these Steam instances normally in sandboxes
 		if choice == '4':
 			accounts = chooseAccounts()
 			for account in accounts:
 				print '\nStarting %s up...' % (account['username'] if 'displayname' not in account else account['displayname'])
 				launchSteam(account['username'], account['password'], account['steaminstall'], account['sandboxname'])
-				time.sleep(3)
+				time.sleep(2)
 				
 		# Open new window to log item drops
 		if choice == '5':
