@@ -167,6 +167,13 @@ def startLog(screen):
 	curses.init_pair(5, 13, curses.COLOR_BLACK) #PINK
 	curses.init_pair(6, 9, curses.COLOR_BLACK) #BLUE
 	curses.init_pair(7, 15, curses.COLOR_BLACK) #WHITE
+	curses.init_pair(8, 8, curses.COLOR_BLACK) #GREY
+	curses.init_pair(9, 2, curses.COLOR_BLACK) #FADED GREEN
+	curses.init_pair(10, 3, curses.COLOR_BLACK) #FADED LIGHT BLUE
+	curses.init_pair(11, 4, curses.COLOR_BLACK) #FADED RED
+	curses.init_pair(12, 5, curses.COLOR_BLACK) #FADED PINK
+	curses.init_pair(13, 6, curses.COLOR_BLACK) #FADED YELLOW
+	curses.init_pair(14, 7, curses.COLOR_BLACK) #FADED WHITE
 
 	accounts = eval(sys.argv[2:][0])
 	API = tf2.API(key=config['Steam API Key'])
