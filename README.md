@@ -1,6 +1,8 @@
 #Script
 ## Requirements
-You will need to install the following modules.
+* [Python 2.7](http://www.python.org/getit/releases/2.7/) -- Install the 32 bit version (x86)
+
+You will also need to install the following modules.
 
 * [curses](http://www.lfd.uci.edu/~gohlke/pythonlibs/#curses) -- Install the 32 bit version
 * [modified tf2.py](http://dl.dropbox.com/u/105828/tf2.py) -- Modified version from the one available at https://github.com/swixel/tf2webappy
@@ -57,7 +59,7 @@ Create a sandbox for each of your folders, with whatever name you want to give t
 You'll want to set the settings as follows:
 
 * `Restrictions` -> `Drop Rights` -> Untick `Drop rights from Administrators and Power Users groups`
-* `Resource Access` -> `Full Access` -> Add your idle accounts Steam folder, and your steamapps folder.
+* `Resource Access` -> `File Access` -> `Full Access` -> Add your idle accounts Steam folder, and your steamapps folder.
   * e.g. `G:\Sandboxie\Steam\1`
   * `G:\Sandboxie\Steam\Steamapps`
 
