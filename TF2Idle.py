@@ -226,7 +226,7 @@ def startLog(screen):
 				# Check to see if item with highest ID has changed
 				if newestitem['id'] != lastIDlist[n]:
 					lastIDlist[n] = newestitem['id']
-					if newestitem['item_name'] not in ['Mann Co. Supply Crate', 'Festive Winter Crate', 'Refreshing Summer Cooler', 'Naughty Winter Crate', 'Nice Winter Crate']:
+					if newestitem['item_class'] != 'supply crate' and newestitem['item_name'] != 'Salvaged Mann Co. Supply Crate':
 						currenttimestr = time.strftime('%H:%M', time.localtime(time.time()))
 						output = {'item': newestitem['item_name'].encode('utf8'), 'item_slot': newestitem['item_slot'], 'account': account, 'time': currenttimestr}
 						finds.pop(0)
