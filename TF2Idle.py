@@ -266,16 +266,29 @@ def startLog(screen):
 		for n in range(1, 21):
 			printscreenline(n, wx, finds[20-n])
 
-		screen.addstr(22, 2, 'Accounts:', curses.color_pair(7))
 		legendstringlength = len('Accounts:') + 3
+		totalaccountstringlength = legendstringlength
+		
+		# Calculate length of accounts legend string beforehand to set the line where printing starts
 		for account in accounts:
 			displayName = account['username'] if 'displayname' not in account else account['displayname']
-			screen.addstr(22, legendstringlength, displayName, curses.color_pair(accounts.index(account)+1))
-			legendstringlength += len(displayName) + 1
+			totalaccountstringlength += len(displayName) + 1
+		startline = 22 - totalaccountstringlength/wx
+	
+		screen.addstr(startline, 2, 'Accounts:', curses.color_pair(7))
+		for account in accounts:
+			try:
+				displayName = account['username'] if 'displayname' not in account else account['displayname']
+				if legendstringlength + len(displayName) > wx:
+					startline += 1
+					legendstringlength = len('Accounts:') + 3
+				screen.addstr(startline, legendstringlength, displayName, curses.color_pair(accounts.index(account)+1))
+				legendstringlength += len(displayName) + 1
+			except curses.error:
+				pass
 		screen.addstr(23, 2, '# of items: %s (+ %s crates)' % (str(findcount), str(cratefindcount)), curses.color_pair(7))
 
 		screen.refresh()
-
 		time.sleep(60)
 
 def main():
