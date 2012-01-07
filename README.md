@@ -102,8 +102,8 @@ config = {
 ## First launch / what to do after every TF2 update
 
 * Run TF2Idle.py
-* Select option 6 to copy the TF2 GCFs from your main Steamapps folder, to your secondary Steamapps folder
-* Select option 7 and then option 'a' to delete any contents in each sandbox, this prevents errors.
-* Select option 1 or 3, and load up **one** of your idle accounts.  Let it do whatever it's doing until TF2 launches, to ensure the GCFs are all non-facked.
-* Close the sandboxed TF2 and Steam (else you'll get errors when launching the other idle accounts)
+* Select option 8 to copy the TF2 GCFs from your main Steamapps folder, to your secondary Steamapps folder
+* Select option 9 and then option 'a' to delete any contents in each sandbox, this prevents errors.
+* Select option 3, and load up **one** of your idle accounts. This is to make sure the backup GCFs are completely up-to-date.
+* Close the sandboxed TF2 and Steam (else you'll get errors when launching the other idle accounts).
 * And then do whatever you like.
