@@ -24,17 +24,18 @@ def getChoice(options=True):
 	if options:
 		print '\nPlease select an option:'
 		print '\n[1] Start idling'
-		print '\n[2] Start idling unsandboxed'
-		print '\n[3] Start TF2(s) normally'
-		print '\n[4] Start Steam(s) normally'
-		print '\n[5] Log item drops'
-		print '\n[6] View backpacks'
-		print '\n[7] Update TF2 GCFs'
-		print '\n[8] Delete sandbox contents\n'
+		print '\n[2] Start idling and log items drops'
+		print '\n[3] Start idling unsandboxed'
+		print '\n[4] Start TF2(s) normally'
+		print '\n[5] Start Steam(s) normally'
+		print '\n[6] Log item drops'
+		print '\n[7] View backpacks'
+		print '\n[8] Update TF2 GCFs'
+		print '\n[9] Delete sandbox contents\n'
 		
 	choice = str(raw_input(''))
 	
-	if choice not in ['1', '2', '3', '4', '5', '6', '7', '8']:
+	if choice not in ['1', '2', '3', '4', '5', '6', '7', '8', '9']:
 		print 'That\'s not a valid choice, try again:\n'
 		choice = getChoice(options=False)
 	return choice
@@ -301,8 +302,19 @@ def main():
 				print '\nStarting idle session on %s...' % (account['username'] if 'displayname' not in account else account['displayname'])
 				idleTF2(account['username'], account['password'], account['steaminstall'], account['sandboxname'])
 				time.sleep(2)
+		# Start idling these TF2 instances in sandboxes and start drop log
+		elif choice == '2':
+			accounts = chooseAccounts()
+			for account in accounts:
+				print '\nStarting idle session on %s...' % (account['username'] if 'displayname' not in account else account['displayname'])
+				idleTF2(account['username'], account['password'], account['steaminstall'], account['sandboxname'])
+				time.sleep(2)
+			if len(config['Steam API Key']) == 32:
+				os.system(r'start python -i %s droplog "%s"' % (sys.argv[0], str(accounts)))
+			else:
+				print '\nError: Please check your Steam API key is present and valid.'
 		 # Start idling single TF2 instance unsandboxed
-		if choice == '2':
+		elif choice == '3':
 			account = chooseAccounts()
 			if len(account) > 1:
 				print '\nInvalid choice, please choose a single account'
@@ -310,29 +322,28 @@ def main():
 			print '\nStarting idle session on %s...' % account[0]['username']
 			idleTF2(account[0]['username'], account[0]['password'], account[0]['steaminstall'])
 		# Start up these TF2 instances normally in sandboxes
-		if choice == '3':
+		elif choice == '4':
 			accounts = chooseAccounts()
 			for account in accounts:
 				print '\nStarting %s up...' % (account['username'] if 'displayname' not in account else account['displayname'])
 				launchTF2(account['username'], account['password'], account['steaminstall'], account['sandboxname'])
 				time.sleep(2)	
 		# Start up these Steam instances normally in sandboxes
-		if choice == '4':
+		elif choice == '5':
 			accounts = chooseAccounts()
 			for account in accounts:
 				print '\nStarting %s up...' % (account['username'] if 'displayname' not in account else account['displayname'])
 				launchSteam(account['username'], account['password'], account['steaminstall'], account['sandboxname'])
-				time.sleep(2)
-				
+				time.sleep(2)	
 		# Open new window to log item drops
-		if choice == '5':
+		elif choice == '6':
 			if len(config['Steam API Key']) == 32:
 				accounts = chooseAccounts()
 				os.system(r'start python -i %s droplog "%s"' % (sys.argv[0], str(accounts)))
 			else:
 				print '\nError: Please check your Steam API key is present and valid.'
 		# Open up these accounts in a backpack viewer
-		if choice == '6':
+		elif choice == '7':
 			accounts = chooseAccounts()
 			for account in accounts:
 				if account['steamID'] != '':
@@ -340,10 +351,10 @@ def main():
 				else:
 					openBackpack(account['username'])
 		# Copy over upto date GCFs
-		if choice == '7':
+		elif choice == '8':
 			copyfiles()
 		# Delete sandbox contents
-		elif choice == '8':
+		elif choice == '9':
 			accounts = chooseAccounts()
 			for account in accounts:
 				try:
